@@ -60,8 +60,7 @@ type UserToken struct {
 }
 
 type UserClaims struct {
-	Id    string `json:"id" db:"id"`
-	Email string `db:"email" json:"email"`
+	Id string `json:"id" db:"id"`
 }
 
 type UserRemoveCredential struct {
