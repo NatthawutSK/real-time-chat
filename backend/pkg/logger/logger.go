@@ -73,7 +73,7 @@ func (l *RiLogger) setBody(c *fiber.Ctx) {
 	}
 
 	switch l.Path {
-	case "v1/users/signup":
+	case "/v1/users/signup":
 		l.Body = "HAHA XD"
 	default:
 		l.Body = body

@@ -39,7 +39,7 @@ func (r *usersRepository) InsertUser(req *users.UserRegisterReq) (IUserRepositor
 	INSERT INTO "users" (
 		email,
 		password,
-		username,
+		username
 		)
 	VALUES ($1, $2, $3)
 	RETURNING "id";
@@ -99,7 +99,7 @@ func (r *usersRepository) FindOneUserByEmail(email string) (*users.UserCredentia
 		"id",
 		"email",
 		"password",
-		"username",
+		"username"
 	FROM "users"
 	WHERE "email" = $1;`
 	user := new(users.UserCredentialCheck)
@@ -137,8 +137,7 @@ func (r *usersRepository) GetProfile(userId string) (*users.User, error) {
 	SELECT
 		"id",
 		"email",
-		"username",
-		"role_id"
+		"username"
 	FROM "users"
 	WHERE "id" = $1;`
 

@@ -5,11 +5,15 @@ import (
 	"github.com/NatthawutSK/real-time-chat/modules/middlewares/middlewaresRepositories"
 	"github.com/NatthawutSK/real-time-chat/modules/middlewares/middlewaresUsecases"
 	"github.com/NatthawutSK/real-time-chat/modules/monitor/monitorHandlers"
+	"github.com/NatthawutSK/real-time-chat/modules/users/usersHandlers"
+	"github.com/NatthawutSK/real-time-chat/modules/users/usersRepositories"
+	"github.com/NatthawutSK/real-time-chat/modules/users/usersUsecases"
 	"github.com/gofiber/fiber/v2"
 )
 
 type IModuleFactory interface {
 	MonitorModule()
+	UsersModule()
 }
 
 type moduleFactory struct {
@@ -35,4 +39,17 @@ func InitMiddlewares(s *server) middlewaresHandlers.IMiddlewaresHandler {
 	repository := middlewaresRepositories.MiddlewaresRepository(s.db)
 	usecase := middlewaresUsecases.MiddlewaresUsecase(repository)
 	return middlewaresHandlers.MiddlewaresHandler(s.cfg, usecase)
+}
+
+func (m *moduleFactory) UsersModule() {
+	repository := usersRepositories.UserRepository(m.s.db)
+	usecase := usersUsecases.UserUsecase(repository, m.s.cfg)
+	handler := usersHandlers.UsersHandler(usecase, m.s.cfg)
+
+	router := m.r.Group("/users")
+
+	router.Post("/signup", handler.SignUp)
+	router.Post("/signin", handler.SignIn)
+	router.Post("/signout", handler.SignOut)
+	router.Get("/:user_id", m.mid.JwtAuth(), m.mid.ParamsCheck(), handler.GetUserProfile)
 }
