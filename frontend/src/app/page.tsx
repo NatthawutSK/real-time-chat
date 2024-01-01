@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
+import LogoutButton from "@/components/Logout";
 
 export default function Home() {
   return (
     <div>
       <h1 className="text-red-600">gg</h1>
-      <Button variant={"destructive"}>gg</Button>
+      <LogoutButton />
     </div>
   );
 }

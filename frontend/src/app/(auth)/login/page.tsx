@@ -18,6 +18,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useToast } from "@/components/ui/use-toast";
+import { API_URL } from "@/constants";
+import { useRouter } from "next/navigation";
 type Props = {};
 
 type Input = z.infer<typeof loginSchema>;
@@ -25,6 +27,7 @@ type Input = z.infer<typeof loginSchema>;
 const Login = ({}: Props) => {
   const [showPass, setShowPass] = useState<boolean>(false);
   const { toast: showToast } = useToast();
+  const router = useRouter();
   const form = useForm<Input>({
     mode: "onChange",
     resolver: zodResolver(loginSchema),
@@ -35,14 +38,50 @@ const Login = ({}: Props) => {
   });
   // const { toast: showToast } = useToast();
 
-  const onSubmit = async (dataForm: Input) => {
-    console.log(dataForm);
-    showToast({
-      title: "Login Success",
-      description: "You have successfully logged in!",
-      variant: "success",
-      duration: 1500,
-    });
+  const onSubmit = async (dataValue: Input) => {
+    try {
+      const response = await fetch(API_URL + "/users/signin", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          email: dataValue.email,
+          password: dataValue.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.status >= 400 && response.status < 600) {
+        showToast({
+          description: data.message,
+          variant: "destructive",
+          duration: 1500,
+        });
+      }
+      if (response.status === 200) {
+        localStorage.setItem("token", data.token.access_token);
+        localStorage.setItem("oauth", data.token.id);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        showToast({
+          title: "Login Success!",
+          description: "You have successfully logged in!",
+          variant: "success",
+          duration: 1500,
+        });
+        router.push("/");
+      }
+
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+      showToast({
+        description: "Something went wrong!",
+        variant: "destructive",
+        duration: 1500,
+      });
+    }
   };
 
   return (
