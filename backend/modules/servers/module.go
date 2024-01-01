@@ -8,12 +8,15 @@ import (
 	"github.com/NatthawutSK/real-time-chat/modules/users/usersHandlers"
 	"github.com/NatthawutSK/real-time-chat/modules/users/usersRepositories"
 	"github.com/NatthawutSK/real-time-chat/modules/users/usersUsecases"
+	"github.com/NatthawutSK/real-time-chat/modules/webSocket"
+	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 )
 
 type IModuleFactory interface {
 	MonitorModule()
 	UsersModule()
+	WebSocketModule(hub *webSocket.Hub)
 }
 
 type moduleFactory struct {
@@ -53,3 +56,22 @@ func (m *moduleFactory) UsersModule() {
 	router.Post("/signout", handler.SignOut)
 	router.Get("/:user_id", m.mid.JwtAuth(), m.mid.ParamsCheck(), handler.GetUserProfile)
 }
+
+func (m *moduleFactory) WebSocketModule(hub *webSocket.Hub) {
+	weHandler := webSocket.NewHandler(hub)
+	router := m.r.Group("/ws")
+	router.Post("/createRoom", weHandler.CreateRoom)
+	router.Get("/getRooms", weHandler.GetRooms)
+	router.Get("/getClients/:roomId", weHandler.GetClients)
+	router.Get("/join-room/:roomId", func(c *fiber.Ctx) error {
+		// IsWebSocketUpgrade returns true if the client
+		// requested upgrade to the WebSocket protocol.
+		if websocket.IsWebSocketUpgrade(c) {
+			c.Locals("allowed", true)
+			return c.Next()
+		}
+		return fiber.ErrUpgradeRequired
+	}, websocket.New(weHandler.JoinRoom))
+}
+
+//

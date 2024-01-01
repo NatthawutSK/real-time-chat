@@ -7,6 +7,7 @@ import (
 	"os/signal"
 
 	"github.com/NatthawutSK/real-time-chat/config"
+	"github.com/NatthawutSK/real-time-chat/modules/webSocket"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jmoiron/sqlx"
 )
@@ -39,6 +40,9 @@ func NewSever(cfg config.IConfig, db *sqlx.DB) IServer {
 }
 
 func (s *server) Start() {
+	//init hub
+	hub := webSocket.NewHub()
+
 	//middleware
 	middleware := InitMiddlewares(s)
 	s.app.Use(middleware.Cors())
@@ -51,10 +55,14 @@ func (s *server) Start() {
 
 	modules.MonitorModule()
 	modules.UsersModule()
+	modules.WebSocketModule(hub)
 	//other module
 
 	// if route not found
 	s.app.Use(middleware.RouterCheck())
+
+	//run hub
+	go hub.Run()
 
 	//Graceful shutdown
 	//if have something interupt, it will shutdown server
