@@ -20,6 +20,8 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useToast } from "@/components/ui/use-toast";
 import { API_URL } from "@/constants";
 import { useRouter } from "next/navigation";
+import { UserInfo, useAuthContext } from "@/provider/AuthProvider";
+import WithoutAuth from "@/components/WithoutAuth";
 type Props = {};
 
 type Input = z.infer<typeof loginSchema>;
@@ -28,6 +30,7 @@ const Login = ({}: Props) => {
   const [showPass, setShowPass] = useState<boolean>(false);
   const { toast: showToast } = useToast();
   const router = useRouter();
+  const { setAuthenticated, authenticated }: any = useAuthContext();
   const form = useForm<Input>({
     mode: "onChange",
     resolver: zodResolver(loginSchema),
@@ -63,7 +66,12 @@ const Login = ({}: Props) => {
       if (response.status === 200) {
         localStorage.setItem("token", data.token.access_token);
         localStorage.setItem("oauth", data.token.id);
-        localStorage.setItem("user", JSON.stringify(data.user));
+        const user: UserInfo = {
+          username: data.user.username,
+          email: data.user.email,
+          id: data.user.id,
+        };
+        localStorage.setItem("user", JSON.stringify(user));
         showToast({
           title: "Login Success!",
           description: "You have successfully logged in!",
@@ -71,6 +79,7 @@ const Login = ({}: Props) => {
           duration: 1500,
         });
         router.push("/");
+        setAuthenticated(true);
       }
 
       console.log(data);
@@ -89,7 +98,9 @@ const Login = ({}: Props) => {
       <div>
         <Card className="w-[420px]">
           <CardHeader>
-            <CardTitle className="text-center">Login</CardTitle>
+            <CardTitle className="text-center">
+              Login {JSON.stringify(authenticated)}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -158,4 +169,4 @@ const Login = ({}: Props) => {
   );
 };
 
-export default Login;
+export default WithoutAuth(Login);

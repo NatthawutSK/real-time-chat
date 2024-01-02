@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { API_URL } from "@/constants";
+import WithoutAuth from "@/components/WithoutAuth";
 type Props = {};
 
 type Input = z.infer<typeof registerSchema>;
@@ -216,4 +217,4 @@ function Register({}: Props) {
   );
 }
 
-export default Register;
+export default WithoutAuth(Register);

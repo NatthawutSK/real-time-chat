@@ -4,12 +4,14 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useToast } from "./ui/use-toast";
 import { Button } from "./ui/button";
+import { useAuthContext } from "@/provider/AuthProvider";
 
 type Props = {};
 
 function LogoutButton({}: Props) {
   const { toast: showToast } = useToast();
   const router = useRouter();
+  const { setAuthenticated, authenticated }: any = useAuthContext();
   const oauth = localStorage.getItem("oauth");
   const Logout = async () => {
     try {
@@ -31,12 +33,12 @@ function LogoutButton({}: Props) {
           variant: "destructive",
           duration: 1500,
         });
-      }
-      if (response.status === 200) {
-        router.push("/login");
+      } else {
         localStorage.removeItem("token");
         localStorage.removeItem("oauth");
         localStorage.removeItem("user");
+        router.push("/login");
+        setAuthenticated(false);
       }
 
       console.log(data);
