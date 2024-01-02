@@ -1,6 +1,6 @@
 module github.com/NatthawutSK/real-time-chat
 
-go 1.21.1
+go 1.20
 
 require (
 	github.com/gofiber/contrib/websocket v1.3.0
