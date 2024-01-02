@@ -6,16 +6,20 @@ import WithoutAuth from "@/components/WithoutAuth";
 import { useAuthContext } from "@/provider/AuthProvider";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { API_URL } from "@/constants";
+import { API_URL, WEBSOCKET_URL } from "@/constants";
 import { useToast } from "@/components/ui/use-toast";
 import { v4 as uuidv4 } from "uuid";
+import { useWsContext } from "@/provider/WebSocketProvider";
+import { useRouter } from "next/navigation";
 type Props = {};
 
 function Home({}: Props) {
   const [rooms, setRooms] = useState<{ id: string; name: string }[]>([]);
   const [roomName, setRoomName] = useState("");
-  const { authenticated }: any = useAuthContext();
+  const { user }: any = useAuthContext();
+  const { setConn }: any = useWsContext();
   const { toast: showToast } = useToast();
+  const router = useRouter();
 
   const getRooms = async () => {
     try {
@@ -89,6 +93,19 @@ function Home({}: Props) {
     }
   };
 
+  const joinRoom = (roomId: string) => {
+    const ws = new WebSocket(
+      `${WEBSOCKET_URL}/ws/join-room/${roomId}?userId=${user.id}&username=${user.username}`
+    );
+    console.log(roomId);
+
+    if (ws.OPEN) {
+      setConn(ws);
+      router.push("/chat");
+      return;
+    }
+  };
+
   return (
     <div className="my-8 px-8  w-full h-full pt-5">
       <div className="flex justify-center items-center">
@@ -118,7 +135,10 @@ function Home({}: Props) {
                 <div className="text-blue font-bold text-lg">{room.name}</div>
               </div>
               <div className="">
-                <Button className="border border-black rounded-md p-2 w-12 ml-2 text-xs">
+                <Button
+                  className="border border-black rounded-md p-2 w-12 ml-2 text-xs"
+                  onClick={() => joinRoom(room.id)}
+                >
                   Join
                 </Button>
               </div>
