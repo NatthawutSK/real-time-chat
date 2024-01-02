@@ -119,13 +119,35 @@ function Chat({}: Props) {
     textarea.current.value = "";
   }
 
+  const handleExitRoom = () => {
+    if (conn) {
+      conn.close(); // Close the WebSocket connection
+    }
+    router.push("/");
+    // Perform additional cleanup or navigation logic if needed
+  };
+
+  const handleKeyPress = (event: any) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      sendMessage();
+    }
+  };
+
   return (
     <div className="flex flex-col w-full">
-      <div className="p-4 md:mx-6 mb-14">
+      <div className="p-2 md:mx-6 mb-24">
+        <div className="sticky top-0 z-10 bg-white">
+          <div className="flex justify-center">
+            <Button className="" onClick={handleExitRoom}>
+              Exit
+            </Button>
+          </div>
+        </div>
         <ChatBody data={messages} />
         {/* <h1>{JSON.stringify(users)}</h1> */}
       </div>
-      <div className="fixed bottom-0 mt-4 w-full">
+      <div className="fixed bottom-0 mt-4  w-full bg-white">
         <div className="flex md:flex-row px-4 py-2 bg-grey md:mx-4 rounded-md items-center">
           <div className="flex w-full mr-4 rounded-md border border-blue">
             <Textarea
@@ -133,6 +155,7 @@ function Chat({}: Props) {
               placeholder="type your message here"
               className="w-full  p-2 rounded-md border-black border "
               style={{ resize: "none" }}
+              onKeyDown={handleKeyPress}
             />
           </div>
           <Button onClick={sendMessage}>Send</Button>
