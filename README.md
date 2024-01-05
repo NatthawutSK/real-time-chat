@@ -25,3 +25,6 @@ The project emphasizes creating a robust chat system allowing users to sign up, 
    ```bash
    git clone https://github.com/NatthawutSK/real-time-chat.git
    ```
+
+## Demo
+https://github.com/NatthawutSK/real-time-chat/assets/89625074/5e5c1f1d-9407-4392-8b81-b6faadb163ee
