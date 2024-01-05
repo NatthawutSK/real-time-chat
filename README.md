@@ -1,6 +1,6 @@
-# Real-Time Chat Application with Gofiber, PostgreSQL, and WebSockets
+# Real-Time Chat Application with Gofiber, PostgreSQL, WebSockets and Next JS
 
-This repository contains a real-time chat application developed using Gofiber as the HTTP framework, PostgreSQL for database management, and WebSockets for enabling real-time communication among users in different chat rooms.
+This repository contains a real-time chat application developed using Gofiber as the HTTP framework, PostgreSQL for database management, Next JS for develope Frontend Web and WebSockets for enabling real-time communication among users in different chat rooms. 
 
 ## Overview
 
