@@ -107,46 +107,51 @@ function Home({}: Props) {
   };
 
   return (
-    <div className="my-8 px-8  w-full h-full pt-5">
-      <div className="flex justify-center items-center">
-        <Input
-          className="border border-black rounded-md p-2 w-full md:w-1/2 lg:w-1/3 "
-          placeholder="Room Name..."
-          value={roomName}
-          onChange={(e) => setRoomName(e.target.value)}
-        />
-        <Button
-          className="border border-black rounded-md p-2 w-32 ml-2"
-          onClick={submitHandler}
-        >
-          Create Room
-        </Button>
+    <>
+      <div className="fixed top-0 right-0 p-2">
+        <LogoutButton />
       </div>
-      <div className="mt-6">
-        <div className="font-bold text-xl">Available Rooms</div>
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
-          {rooms.map((room, index) => (
-            <div
-              key={index}
-              className="border border-blue p-4 flex items-center rounded-md w-full"
-            >
-              <div className="w-full">
-                <div className="text-sm">room</div>
-                <div className="text-blue font-bold text-lg">{room.name}</div>
+      <div className="my-10 px-8  w-full h-full pt-5">
+        <div className="flex justify-center items-center">
+          <Input
+            className="border border-black rounded-md p-2 w-full md:w-1/2 lg:w-1/3 "
+            placeholder="Room Name..."
+            value={roomName}
+            onChange={(e) => setRoomName(e.target.value)}
+          />
+          <Button
+            className="border border-black rounded-md p-2 w-32 ml-2"
+            onClick={submitHandler}
+          >
+            Create Room
+          </Button>
+        </div>
+        <div className="mt-6">
+          <div className="font-bold text-xl">Available Rooms</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+            {rooms.map((room, index) => (
+              <div
+                key={index}
+                className="border border-blue p-4 flex items-center rounded-md w-full"
+              >
+                <div className="w-full">
+                  <div className="text-sm">room</div>
+                  <div className="text-blue font-bold text-lg">{room.name}</div>
+                </div>
+                <div className="">
+                  <Button
+                    className="border border-black rounded-md p-2 w-12 ml-2 text-xs"
+                    onClick={() => joinRoom(room.id)}
+                  >
+                    Join
+                  </Button>
+                </div>
               </div>
-              <div className="">
-                <Button
-                  className="border border-black rounded-md p-2 w-12 ml-2 text-xs"
-                  onClick={() => joinRoom(room.id)}
-                >
-                  Join
-                </Button>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

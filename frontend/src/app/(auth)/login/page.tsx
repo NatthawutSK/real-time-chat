@@ -98,9 +98,7 @@ const Login = ({}: Props) => {
       <div>
         <Card className="w-[420px]">
           <CardHeader>
-            <CardTitle className="text-center">
-              Login {JSON.stringify(authenticated)}
-            </CardTitle>
+            <CardTitle className="text-center">Login</CardTitle>
           </CardHeader>
           <CardContent>
             <Form {...form}>
